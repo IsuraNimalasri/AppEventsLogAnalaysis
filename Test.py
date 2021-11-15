@@ -29,7 +29,7 @@ log_generic_schema = StructType([
 log_df =  spark.read\
     .format("org.apache.spark.sql.json")\
     .option("inferSchema","true")\
-    .load("data/2020/1*/*/mara-log/requests-*.json")
+    .load("data/2020/1*/1*/mara-log/requests-*.json")
 
 log_df.show(2)
 #
@@ -82,7 +82,7 @@ t_dashboard_useage = dbviewDF.select(
     lit(1).alias("event_count"),
     col("browser"),
     col("browser-platform"),
-    split(col("path"),'/').alias("view_path"),
+    col("path"),
     split(col("user_domain"),'[.]').getItem(0).alias("team"),
     split(col("user_domain"),'[.]').getItem(1).alias("territory")
 )
@@ -91,18 +91,45 @@ print("-------------------- User Engagemnet------------------")
 
 windowSpec  = Window.partitionBy("active_user").orderBy(desc(col("log_ts")))
 
-t_dashboard_useage.withColumn("rank", rank().over(windowSpec)) \
-      .withColumn("lastViewedTime", lead("log_ts", 1).over(windowSpec))\
-      .withColumn("lastViewedDate",to_date(col("lastViewedTime"),"yyyy-MM-dd").alias("log_date"))\
-      .where(col("lastViewedTime").isNotNull() & (col("lastViewedDate")== col("log_date")) )\
+tem_tab = t_dashboard_useage.select(
+    col("log_ts"),
+    col("view_args_id").alias("dashboard_name"),
+    col("active_user"),
+    col("team").alias("user_company"),
+    col("territory").alias("company_territory"),
+    col("browser-platform"),
+    col("browser"),
+    col("event_count"),
+    col("log_date")
+)
+
+tem_tab.select(
+    col('*'),
+    rank().over(windowSpec).alias("rank"),
+    lead("log_ts", 1).over(windowSpec).alias("lastViewedTime"),
+    to_date(lead("log_ts", 1).over(windowSpec),"yyyy-MM-dd").alias("lastViewedDate"))\
+    .where(col("lastViewedTime").isNotNull() & (col("lastViewedDate")== col("log_date")) )\
     .withColumn("durationInSec",(col("log_ts").cast("long") - col("lastViewedTime").cast("long")))
 
+t_dashboard_useage.withColumnRenamed("view_args_id","dhasboard_name")\
+    .withColumn("rank", rank().over(windowSpec)) \
+    .withColumn("lastViewedTime", lead("log_ts", 1).over(windowSpec))\
+    .withColumn("lastViewedDate",to_date(col("lastViewedTime"),"yyyy-MM-dd").alias("log_date"))\
+    .where(col("lastViewedTime").isNotNull() & (col("lastViewedDate")== col("log_date")) )\
+    .withColumn("durationInSec",(col("log_ts").cast("long") - col("lastViewedTime").cast("long")))\
+    .show()
+    # .write.csv("landing/user_engagement.csv")
+
+# tem_tab.show(1)
+
+# t_dashboard_useage.write.csv("landing/user_engagement.csv")
 
 t_dashboard_useage.groupby(col('active_user')).agg(
     max(col("log_ts")).alias("LastViewTime"),
     datediff(current_timestamp() , max(col("log_ts")).alias("LastViewTime") ).alias("age")
 ).orderBy("LastViewTime")
-# t_dashboard_useage
+
+t_dashboard_useage.show(2)
 
 print("-------------------- User Engagemnet END------------------")
 
@@ -148,7 +175,7 @@ total_v_count = t_traficOnDashboard\
 
 # total_v_count.show()
 
-total_v_count.write.csv('landing/total_v_count.csv')
+# total_v_count.write.csv('landing/total_v_count.csv')
 
 # total_v_count.groupby("dashboard_name").agg(
 #     (sum("total_views") / count("view_date")).alias("avg_views_per_day"),
