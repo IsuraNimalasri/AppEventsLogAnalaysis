@@ -1,0 +1,14 @@
+    {
+
+        "method": "POST",
+        "path": "/dashboards/sales-comparison",
+        "endpoint": "dashboards.view_dashboard",
+        "view-args": {"id": "sales-comparison"},
+        "status": 200,
+        "user": "laura.hahner@lampenwelt.de",
+        "timestamp": "2021-01-01T09:04:43.681590",
+         "browser": "chrome",
+         "browser-platform": "windows",
+         "browser-version": "87.0.4280.88"
+
+    }
