@@ -68,8 +68,9 @@ if __name__ == '__main__':
     file_name = "event-view-dashboard.csv"
     viewDashboardDF.write.format("csv").option("header",True).mode('overwrite').save(STAGING_PATH.format(fname=file_name))
 
+#     -----------------------------------------------------------------------
 #     TODO :
 #       1. Need new code line to move processed data from landing to archive.
 #       2. Need to create marker file or marker event with process statistics.
-#
+#     -------------------------------------------------------------------------
 #
