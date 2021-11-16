@@ -20,7 +20,7 @@ if __name__ == '__main__':
     # Create Spark Entry-Point
     spark = SparkSession \
         .builder.master("local[2]") \
-        .appName('Unmind_User_Request_Log-ReaderJob') \
+        .appName('dataprocesser-landing-to-staging') \
         .getOrCreate()
 
     # Read and create dataframe
