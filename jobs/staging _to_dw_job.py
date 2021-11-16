@@ -7,6 +7,7 @@ import calendar
 
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
+from pyspark.sql.window import *
 
 
 __author__ = "Isura Nimalasiri"
@@ -58,9 +59,21 @@ if __name__ == '__main__':
     get_usertype = udf(get_user_account_type)
     segment_dashboards =udf(segment_dashboards)
 
+    # Time Legacy Application
+    spark.sql("set spark.sql.legacy.timeParserPolicy=LEGACY")
+
     # Read Staging Source
-    stagingDF = spark.read.format('csv').option("header",True).load(STAGING_PATH)
-    stagingDF.show(2)
+    raw_stagingDF = spark.read.format('csv')\
+        .option("header",True)\
+        .load(STAGING_PATH)
+    stagingDF = raw_stagingDF\
+        .withColumnRenamed("request_timestamp","str_request_timestamp")\
+        .withColumn("request_timestamp",to_timestamp(col("str_request_timestamp"),"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"))\
+        .dropDuplicates()
+
+    stagingDF.printSchema()
+    stagingDF.show(truncate=False)
+
 
     # ==========================
     # Build Dimension Tables
@@ -76,7 +89,7 @@ if __name__ == '__main__':
         segment_dashboards(col("dashboard_id")).alias("db_type")
     ).dropDuplicates()
 
-    dashboardDimDF.show(5)
+    # dashboardDimDF.show(5)
 
     # ----------------------------------
     # Device and Browser Dimension Table
@@ -88,7 +101,7 @@ if __name__ == '__main__':
         concat( col("browser"),lit('='),col("browser-version")).alias("b_dimkey")
     ).dropDuplicates()
 
-    browserDimDF.show(5)
+    # browserDimDF.show(5)
 
     #---------------------
     # User Dimension Table
@@ -102,7 +115,7 @@ if __name__ == '__main__':
         .withColumn("u_fname",split(col("u_name"),'[.]').getItem(0))\
         .withColumn("u_lname",split(col("u_name"),'[.]').getItem(1))\
         .dropDuplicates()
-    userDimDF.show(5)
+    # userDimDF.show(5)
 
     # ---------------------
     # Time Dimension Table
@@ -119,14 +132,17 @@ if __name__ == '__main__':
         col("request_weekofyear").alias("req_woy")
     ).dropDuplicates()
 
-    timeDimDF.show(5)
+    # timeDimDF.show(5)
 
     # ==========================
     # Build Fact Tables
     # ==========================
 
-    # ViewRequest  Fact Table
-    ViewRequestFactDF = stagingDF.select(
+    #-------------------------
+    # ViewRequests  Fact Table
+    #-------------------------
+
+    ViewRequestsFactDF = stagingDF.select(
         col("dashboard_id").alias("db_dimkey"),
         concat(col("browser"),lit('='), col("browser-version")).alias("b_dimkey"),
         col("request_epoch").alias("time_dimkey"),
@@ -141,6 +157,39 @@ if __name__ == '__main__':
         sum(col("e_value")).alias("total_requests")
     )
 
-    ViewRequestFactDF.show()
+    # ViewRequestsFactDF.show()
+
+    # -----------------------------
+    # User Engagement  Fact Table
+    # -----------------------------
+
+    # Window Logic
+    userNtime_windowSpec = Window.partitionBy("user").orderBy(desc(col("request_timestamp")))
+    userRequestFlow_window = Window.partitionBy("user","request_date").orderBy(asc(col("request_timestamp")))
+
+    userEngagementFactDF =stagingDF.select(
+        # Dim Keys
+        col("user").alias("user_dimkey"),
+        col("dashboard_id").alias("db_dimkey"),
+        concat(col("browser"), lit('='), col("browser-version")).alias("b_dimkey"),
+        col("request_epoch").alias("time_dimkey"),
+
+        col("request_timestamp"),
+        col("request_date"),
+        col("user_event_value"),
+        lead("request_timestamp", 1).over(userNtime_windowSpec).alias("last_request_timestamp"),
+        rank().over(userRequestFlow_window).alias("viewflow")
+    )\
+        .withColumn("durationInSec",(col("request_timestamp").cast("long") - col("last_request_timestamp").cast('long')))\
+        .orderBy(desc("request_timestamp"))
+
+    # userEngagementFactDF.show(truncate=False)
+
+
+
+
+
+
+
 
 
