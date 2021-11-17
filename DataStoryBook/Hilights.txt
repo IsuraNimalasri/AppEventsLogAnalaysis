@@ -1,0 +1,143 @@
+
+Validity of Requests
+
+200 - Success
+500 - Internal Server Error
++------+---------------------+
+|status|sum(user_event_value)|
++------+---------------------+
+|200   |171030               |
+|500   |143                  |
++------+---------------------+
+
+======================
+Status 500 Request
+======================
+Top 3 dashboard
++------------+---------------------------+--------------+
+|request_year|dashboard_id               |error_requests|
++------------+---------------------------+--------------+
+|2019        |marketing-channel-overview |92            |
+|2020        |marketing-awin-scorecard   |24            |
+|2019        |weekly-overview            |7             |
+|2019        |marketing-dis-ret-scorecard|4             |
+------------------------------------------------------------------------------------------
+============================================
+Dashboard Usage or Dashboard Traffic Analysis
+==============================================
+
+All the time top 10 traffic dashboards
++-------------------------+------------+
+|dashboard_id             |View_Traffic|
++-------------------------+------------+
+|sales-comparison         |126055      |
+|marketing-overview       |14864       |
+|weekly-sales-comparison  |11665       |
+|revenue-factura          |2884        |
+|shop-performance-overview|2722        |
+|shipment-parcels         |2380        |
+|delivery-quotes          |1604        |
+|marketing-awin-scorecard |1174        |
+|sales-trend              |924         |
+|shipment-orders          |827         |
++-------------------------+------------+
+
+Active user count Over Year
++------------+------------+-----------------+--------------------------+
+|request_year|View_Traffic|active_user_count|avg_traffic_made_by_a_user|
++------------+------------+-----------------+--------------------------+
+|2018        |4790        |55               |87.0909090909091          |
+|2019        |51390       |158              |325.253164556962          |
+|2020        |112770      |161              |700.4347826086956         |
+|2021        |2223        |77               |28.87012987012987         |
++------------+------------+-----------------+--------------------------+
+
+top 5  Popular Dashboards
++-------------------------+------------------+
+|dashboard_id             |distinct_user_count|
++-------------------------+-----------------+
+|marketing-overview       |193              |
+|sales-comparison         |174              |
+|shop-performance-overview|156              |
+|sales-trend              |107              |
+|weekly-sales-comparison  |104              |
++-------------------------+-----------------+
+
+Average Engagement time per dashboard per day per user
++-----------------------------+--------------+--------------+---------------+-------------------------------+
+|db_dimkey                    |Total_Duration|number_of_days|number_of_users|avg_engagement_time (Seconds) |
++-----------------------------+--------------+--------------+---------------+-------------------------------+
+|emarsys-api-monitoring       |34334         |21            |5              |326.9904761904762  |
+|revenue-factura              |2555100       |1261          |17             |119.19111816019033 |
+|navision-api-monitoring      |6419          |9             |7              |101.88888888888889 |
+|delivery-quotes              |808930        |509           |21             |75.67873514828328  |
+|revenue-factura-before-returs|136336        |173           |14             |56.29066886870355  |
+|value-returned               |100646        |144           |13             |53.763888888888886 |
+|shipment-parcels             |1562050       |1177          |29             |45.763630504204144 |
+|marketing-dis-ret-scorecard  |68655         |89            |18             |42.855805243445694 |
+|marketing-channel-overview   |376553        |259           |35             |41.5392167677882   |
+|marketing-overview           |19174326      |3848          |125            |39.863463617463616 |
+|marketing-awin-scorecard     |131285        |198           |19             |34.89766081871345  |
+|provisioning-quotes          |43368         |91            |14             |34.04081632653061  |
+|user-stats                   |318627        |250           |42             |30.34542857142857  |
+|weekly-overview              |268816        |272           |33             |29.94830659536542  |
+|supplies                     |17394         |52            |13             |25.73076923076923  |
+|shipment-orders              |297883        |333           |36             |24.848431765098432 |
+|marketing-crm-scorecard      |170921        |225           |31             |24.504802867383514 |
+|sales-trend                  |500842        |364           |70             |19.656279434850862 |
+|marketing-sea-scorecard      |64128         |161           |24             |16.596273291925467 |
+|marketing-affiliate-scorecard|87487         |172           |35             |14.532724252491695 |
++-----------------------------+--------------+--------------+---------------+-------------------+
+
+Dashboard_Audience Top3
++----------------+---------------+--------------+
+|user_domain     |number_of_users|total_requests|
++----------------+---------------+--------------+
+|lampenwelt.de   |211            |150422        |
+|project-a.com   |24             |1957          |
+|luminaire.fr    |4              |2730          |
++----------------+---------------+--------------+
+
+Dashboard Access Browser and Tools
++-------+---------------+--------------+
+|browser|number_of_users|total_requests|
++-------+---------------+--------------+
+|firefox|             28|          5124|
+| chrome|            229|        165810|
+|   edge|              7|            34|
+|   msie|              2|            45|
+| safari|              6|           160|
++-------+---------------+--------------+
++----------------+---------------+--------------+
+|browser-platform|number_of_users|total_requests|
++----------------+---------------+--------------+
+|         windows|            222|        167461|
+|           macos|             26|          3595|
+|         android|              5|            15|
+|           linux|              2|            99|
+|          iphone|              1|             3|
++----------------+---------------+--------------+
+Example : marketing-overview dashboard useage over month
++-------------+---------------+------+-------------+
+|request_month|number_of_users|doamin|request_count|
++-------------+---------------+------+-------------+
+|           10|             87|     5|         1769|
+|           11|             92|     7|         1677|
+|            9|             81|     5|         1535|
+|            3|             70|     3|         1233|
+|           12|             77|     5|         1195|
+|            1|             75|     6|         1160|
+|            2|             83|     5|         1148|
+|            8|             76|     7|         1129|
+|            4|             72|     5|         1048|
+|            7|             67|     7|         1036|
+|            6|             66|     6|          971|
+|            5|             69|     5|          966|
++-------------+---------------+------+-------------+
+
+======================================================
+USER Analytics
+===========================================
+
+
+
