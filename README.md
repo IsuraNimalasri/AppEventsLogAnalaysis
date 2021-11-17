@@ -68,20 +68,14 @@ psql (13.0 (Debian 13.0-1.pgdg100+1))
 Type "help" for help.
 
 utracker=# 
-
-
 ```
-
-####Start Spark Jobs
-
+#### Start Spark Jobs
 
 |Job Name | Execution Command  |
 |---------|---------------------------------|
 |landing_to_processing_job |`python3 spark_mimic/jobs/landing_to_processing_job.py`|
 |processing_to_staging_job `| `python3 spark_mimic/jobs/processing_to_staging_job.py`|
 | staging_to_dw_job|`python3 spark_mimic/jobs/staging_to_dw_job.py`|
-
-
 
 ## Data Warehouse Diagram
 
