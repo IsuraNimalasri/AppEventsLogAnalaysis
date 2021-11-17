@@ -1,5 +1,5 @@
 """
-This Spark jobs read data from staging files load into Data-warehouse table.
+This Spark jobs reshape staging files into Data-warehouse table. Once reshape completed job writing data to database
 """
 
 import datetime
@@ -13,9 +13,6 @@ from pyspark.sql.window import *
 
 __author__ = "Isura Nimalasiri"
 __version__ = "1.0.0"
-
-
-
 
 def segment_dashboards(db_name):
 
@@ -32,20 +29,16 @@ def segment_dashboards(db_name):
     else:
         return "other"
 
-
-
-
-
-
 if __name__ == '__main__':
-    #  Declare Common Variables
-    DB_DRIVER_PATH = "../drivers/postgresql-42.3.1.jar"
 
+    #  Declare Common Variables
+    file_name = "event-view-dashboard.parquet"
+    PROCESSING_PATH = f"../../s3_mimic/processing/{file_name}"
+    STAGING_PATH = "../../s3_mimic/staging/{stage_name}"
 
     # Spark Job Entry point
     spark = SparkSession.builder.master("local[2]") \
-        .appName('dataprocesser-staging-to-dw') \
-        .config("spark.jars", DB_DRIVER_PATH) \
+        .appName('processing-to-staging') \
         .getOrCreate()
 
     # Register UDF
@@ -55,9 +48,9 @@ if __name__ == '__main__':
     spark.sql("set spark.sql.legacy.timeParserPolicy=LEGACY")
 
     # Read Staging Source
-    raw_stagingDF = spark.read.format('csv')\
-        .option("header",True)\
-        .load(STAGING_PATH)
+    raw_stagingDF = spark.read.format('parquet')\
+        .load(PROCESSING_PATH)
+
     stagingDF = raw_stagingDF\
         .withColumnRenamed("request_timestamp","str_request_timestamp")\
         .withColumn("user_event_value",col("user_event_value").cast('int'))\
@@ -82,7 +75,6 @@ if __name__ == '__main__':
         segment_dashboards(col("dashboard_id")).alias("db_type")
     ).dropDuplicates()
 
-    # dashboardDimDF.show(5)
 
     # ----------------------------------
     # Device and Browser Dimension Table
@@ -94,21 +86,17 @@ if __name__ == '__main__':
         concat( col("browser-platform"),lit('='),col("browser"),lit('='),col("browser-version")).alias("b_dimkey")
     ).dropDuplicates()
 
-    # browserDimDF.show(5)
 
     #---------------------
     # User Dimension Table
     # --------------------
     userDimDF = stagingDF.select(
         col("user").alias("user_dimkey"),
+        col("u_type"),
         split(col("user"),'@').getItem(0).alias("u_name"),
-        col("user_domain").alias("u_domain"),
+        col("user_domain").alias("u_domain")).dropDuplicates()
 
-    )\
-        .withColumn("u_fname",split(col("u_name"),'[.]').getItem(0))\
-        .withColumn("u_lname",split(col("u_name"),'[.]').getItem(1))\
-        .dropDuplicates()
-    # userDimDF.show(5)
+    userDimDF.show()
 
     # ---------------------
     # Time Dimension Table
@@ -182,102 +170,33 @@ if __name__ == '__main__':
 
     userEngagementFactDF.show(truncate=False)
 
-    # Write Datafame into DataWarehouse.
+    # Create Staging_File
 
-    df_list = [
-        # (dashboardDimDF,"t_dim_dashboards"),
-        # (browserDimDF,"t_dim_browser"),
-        # (userDimDF,"t_dim_user"),
-        # (timeDimDF,"t_dim_time"),
-        # (ViewRequestsFactDF,"t_fact_view_reqs"),
-        (userEngagementFactDF,"t_fact_user_eng")
-    ]
-    # try:
-    #
-    #     for db_inf in df_list:
-    #
-    #         db_table=db_inf[0]
-    #         db_table.write\
-    #             .format("jdbc")\
-    #             .option("driver","org.postgresql.Driver")\
-    #             .option("url", "jdbc:postgresql://localhost:5432/utracker") \
-    #             .option( "user" ,"docker")\
-    #             .option("password" , "docker")\
-    #             .option("dbtable", f"public.{db_inf[1]}")\
-    #             .mode("append")\
-    #             .save()
-    #         print("-----------------------")
-    #         print(db_inf)
-    #         print("-----------------------")
-    #
-    # except Exception as err:
-    #     print(err)
+
+    try:
+        for db_inf in df_list:
+            db_table=db_inf[0]
+            file_path = STAGING_PATH.format(stage_name=db_inf[1])
+            db_table.write\
+                .format("parquet")\
+                .mode("overwrite")\
+                .save(file_path)
+
+            print("-----------------------")
+            print(db_inf)
+            print("-----------------------")
+
+    except Exception as err:
+        print(err)
 
 
 
-
-
-    #  Top 10 High Trafic Dashboards (all the time)
-    stagingDF.filter(col("status")=="200")\
-        .groupby("dashboard_id")\
-        .agg(
-        sum("user_event_value").alias("View_Traffic")
-        )\
-        .orderBy(desc("View_Traffic"),desc("dashboard_id"))\
-        .limit(10)\
-
-    # Active user count over year
-    stagingDF.groupby("request_year") \
-        .agg(
-        sum("user_event_value").alias("View_Traffic"),
-        count_distinct("user").alias("active_user_count")
-        ).withColumn("avg_traffic_made_by_a_user" ,(col("View_Traffic")/col("active_user_count"))) \
-        .orderBy( asc("request_year")) \
-        # .show(truncate=False)
-
-#     popular dashboards
-    stagingDF.groupby("dashboard_id") \
-        .agg(
-        count_distinct("user").alias("active_user_count"))\
-        .orderBy(desc("active_user_count")) \
-        .limit(5)\
-        # .show(truncate=False)
-
-    userEngagementFactDF.filter(col("request_date") == col("last_request_date"))\
-    .groupby("db_dimkey")\
-    .agg(
-        sum("durationInSec").alias("Total_Duration"),
-        count("request_date").alias("number_of_days"),
-        count_distinct("user_dimkey").alias("number_of_users")
-    ).withColumn("avg_engagement_time",col("Total_Duration")/(col("number_of_users")*col("number_of_days")))\
-    .orderBy(desc("avg_engagement_time"))
-
-    # Dashboard Audience
-
-    stagingDF.groupby("user_domain").agg(
-        count_distinct("user").alias("number_of_users"),
-        sum("user_event_value").alias("total_requests"))\
-    # .orderBy(desc("number_of_users")).show(truncate=False)
-
-    # Dashboard Access Browser and
-    stagingDF.groupby("browser-platform").agg(
-        count_distinct("user").alias("number_of_users"),
-        sum("user_event_value").alias("total_requests"))\
-        .orderBy(desc("number_of_users"))
-
-    # marketing - overview
-
-    stagingDF.filter(col("dashboard_id")=="marketing-overview").groupby("request_month")\
-        .agg(
-        count_distinct("user").alias("number_of_users"),
-        count_distinct("user_domain").alias("doamin"),
-        sum("user_event_value").alias("request_count")
-    ).orderBy(desc("request_count"))
-
-
-
-
-
+#   --------------------------------------------------------------------------
+#   TODO :
+#       1. Need to create marker file or marker event with last read file folder.
+#       2. Need to apply logger  instead of print messages
+#       3. Need to add job statistics
+#   ------------------------------------------------------------------------------
 
 
 
