@@ -69,10 +69,7 @@ Type "help" for help.
 
 utracker=# 
 ```
-
-
 #### Start Spark Jobs
-
 
 |Job Name | Execution Command  |
 |---------|---------------------------------|
