@@ -10,6 +10,7 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
 from pyspark.sql.window import *
 
+from pipeline_util.basic_utils import read_config
 
 __author__ = "Isura Nimalasiri"
 __version__ = "1.0.0"
@@ -35,6 +36,10 @@ if __name__ == '__main__':
     file_name = "event-view-dashboard.parquet"
     PROCESSING_PATH = f"../../s3_mimic/processing/{file_name}"
     STAGING_PATH = "../../s3_mimic/staging/{stage_name}"
+    CONF_PATH = "../../pipeline-meta/cfg_event-view-dashboard.json"
+
+    # Read Config
+    conf_json = read_config(CONF_PATH)
 
     # Spark Job Entry point
     spark = SparkSession.builder.master("local[2]") \
@@ -171,10 +176,12 @@ if __name__ == '__main__':
     userEngagementFactDF.show(truncate=False)
 
     # Create Staging_File
-
-
     try:
+        df_list = conf_json['processing_args']['df_list']
         for db_inf in df_list:
+            print(db_inf)
+            db_inf = eval(db_inf)
+            print(db_inf)
             db_table=db_inf[0]
             file_path = STAGING_PATH.format(stage_name=db_inf[1])
             db_table.write\

@@ -43,18 +43,52 @@ pip install pyspark
 
 Note : This example is not running spark cluster mode. It's running only standalone.So you no need to run using `spark-submit`
 
+####Start PostgreSQL DB
+
+```buildoutcfg
+# Step 01 : open new terminal and go inside to the postgresql_mimic dir
+cd postgresql_mimic/
+docker-compose up
+
+# Step 02 : open another terminal and go inside to the postgresql_mimic dir
+cd postgresql_mimic/
+./psql.sh
+
+# this script help you to execute queries from postgres container
+# Ex: 
+==================     Help for psql   =========================
+\dt             : Describe the current database
+\t [table]      : Describe a table
+\c              : Connect to a database
+\h              : help with SQL commands
+\?              : help with psql commands
+\q              : quit
+==================================================================
+psql (13.0 (Debian 13.0-1.pgdg100+1))
+Type "help" for help.
+
+utracker=# 
+
+
+```
+
+
+####Start Spark Jobs
 
 |Job Name | Execution Command  |
 |---------|---------------------------------|
-|`landing_to_processing_job.py` | |
-|`processing_to_staging_job.py `| |
-| `staging_to_dw_job.py`||
+|landing_to_processing_job |`python3 spark_mimic/jobs/landing_to_processing_job.py`|
+|processing_to_staging_job `| `python3 spark_mimic/jobs/processing_to_staging_job.py`|
+| staging_to_dw_job|`python3 spark_mimic/jobs/staging_to_dw_job.py`|
 
 
 
-## Data Warehouse Model
+## Data Warehouse Diagram
+
+![](DWDIm.png)
 
 
 
 
+### Analytics 
 
