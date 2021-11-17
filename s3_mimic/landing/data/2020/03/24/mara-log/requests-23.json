@@ -1,0 +1,2 @@
+{"method": "GET", "path": "/", "endpoint": "start_page.start_page", "view-args": {}, "status": 302, "user": "mario.herzog@lampenwelt.de", "timestamp": "2020-03-24T23:05:56.961549", "browser": "chrome", "browser-platform": "windows", "browser-version": "80.0.3987.149"}
+{"method": "GET", "path": "/home/", "endpoint": "landing-page.home", "view-args": {}, "status": 200, "user": "mario.herzog@lampenwelt.de", "timestamp": "2020-03-24T23:05:57.037574", "browser": "chrome", "browser-platform": "windows", "browser-version": "80.0.3987.149"}

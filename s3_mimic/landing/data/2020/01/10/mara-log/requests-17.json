@@ -1,0 +1,2 @@
+{"method": "POST", "path": "/mondrian/xmla/authorize", "endpoint": "py_mondrian.xmla_authorize", "view-args": {}, "status": 200, "user": "alexander.deuchert@lampenwelt.de", "timestamp": "2020-01-10T17:39:40.834144", "browser": null, "browser-platform": null, "browser-version": null}
+{"method": "GET", "path": "/mondrian/excel", "endpoint": "py_mondrian.excel", "view-args": {}, "status": 200, "user": "alexander.deuchert@lampenwelt.de", "timestamp": "2020-01-10T17:39:46.523443", "browser": "chrome", "browser-platform": "windows", "browser-version": "79.0.3945.88"}

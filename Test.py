@@ -29,7 +29,7 @@ log_generic_schema = StructType([
 log_df =  spark.read\
     .format("org.apache.spark.sql.json")\
     .option("inferSchema","true")\
-    .load("data/2020/1*/1*/mara-log/requests-*.json")
+    .load("data/202*/*/*/mara-log/requests-*.json")
 
 log_df.show(2)
 #
@@ -88,7 +88,7 @@ t_dashboard_useage = dbviewDF.select(
 )
 
 print("-------------------- User Engagemnet------------------")
-
+spark.sql("set spark.sql.legacy.timeParserPolicy=LEGACY")
 windowSpec  = Window.partitionBy("active_user").orderBy(desc(col("log_ts")))
 
 tem_tab = t_dashboard_useage.select(
@@ -117,8 +117,7 @@ t_dashboard_useage.withColumnRenamed("view_args_id","dhasboard_name")\
     .withColumn("lastViewedDate",to_date(col("lastViewedTime"),"yyyy-MM-dd").alias("log_date"))\
     .where(col("lastViewedTime").isNotNull() & (col("lastViewedDate")== col("log_date")) )\
     .withColumn("durationInSec",(col("log_ts").cast("long") - col("lastViewedTime").cast("long")))\
-    .show()
-    # .write.csv("landing/user_engagement.csv")
+    .write.format("csv").option("header",True).mode('overwrite').save("landing/user_engagement.csv")
 
 # tem_tab.show(1)
 
@@ -175,7 +174,7 @@ total_v_count = t_traficOnDashboard\
 
 # total_v_count.show()
 
-# total_v_count.write.csv('landing/total_v_count.csv')
+total_v_count.write.format("csv").option("header",True).mode('overwrite').save('landing/total_v_count.csv')
 
 # total_v_count.groupby("dashboard_name").agg(
 #     (sum("total_views") / count("view_date")).alias("avg_views_per_day"),
@@ -193,3 +192,26 @@ dbviewDF.select(
     col("browser-version")
     ).dropDuplicates().orderBy(asc("browser"),desc("browser-version"))\
     .show()
+
+#
+# requestLogDF.select(
+#         col("view-args").getField("column_name").alias("column_name"),
+#         col("view-args").getField("cube_name").alias("cube_name"),
+#         col("view-args").getField("data_set_id").alias("data_set_id"),
+#         col("view-args").getField("db_alias").alias("db_alias"),
+#         col("view-args").getField("email").alias("email"),
+#         col("view-args").getField("filename").alias("filename"),
+#         col("view-args").getField("filter_pos").alias("filter_pos"),
+#         col("view-args").getField("limit").alias("limit"),
+#         col("view-args").getField("new_role").alias("new_role"),
+#         col("view-args").getField("params").alias("params"),
+#         col("view-args").getField("path").alias("path"),
+#         col("view-args").getField("pos").alias("pos"),
+#         col("view-args").getField("query_id").alias("query_id"),
+#         col("view-args").getField("run_id").alias("run_id"),
+#         col("view-args").getField("schemas").alias("schemas"),
+#         col("view-args").getField("sort_col").alias("sort_col"),
+#         col("view-args").getField("sort_dir").alias("sort_dir"),
+#         col("view-args").getField("table_name").alias("table_name"),
+#         col("view-args").getField("term").alias("term")
+#     ).filter(col("endpoint") == "dashboards.view_dashboard").count()

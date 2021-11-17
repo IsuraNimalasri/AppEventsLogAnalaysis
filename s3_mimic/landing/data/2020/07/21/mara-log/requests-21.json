@@ -1,0 +1,1 @@
+{"method": "POST", "path": "/mondrian/saiku/authorize", "endpoint": "py_mondrian.saiku_authorize", "view-args": {}, "status": 200, "user": "david.doust@lights.co.uk", "timestamp": "2020-07-21T21:17:23.864508", "browser": null, "browser-platform": null, "browser-version": null}
