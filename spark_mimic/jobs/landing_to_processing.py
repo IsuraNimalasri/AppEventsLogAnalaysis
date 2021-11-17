@@ -29,12 +29,12 @@ def get_user_account_type(email):
 
 if __name__ == '__main__':
     #  Declare Common Variables
-    LANDING_PATH = "../../s3_mimic/landing/data/2021/01/0*/mara-log/requests-*.json"
+    LANDING_PATH = "../../s3_mimic/landing/data/*/*/*/mara-log/requests-*.json"
     PROCESSING_PATH = "../../s3_mimic/processing/{fname}"
-    pipeline_name = "event-view-dashboard"
+    CONF_PATH = "../../pipeline-meta/cfg_event-view-dashboard.json"
 
     # Read Config
-    conf_json = read_config(pipeline_name)
+    conf_json = read_config(CONF_PATH)
 
     # Create Spark Entry-Point
     spark = SparkSession \

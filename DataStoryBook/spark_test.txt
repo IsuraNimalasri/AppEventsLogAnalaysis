@@ -1,0 +1,58 @@
+
+    #  Top 10 High Trafic Dashboards (all the time)
+    stagingDF.filter(col("status")=="200")\
+        .groupby("dashboard_id")\
+        .agg(
+        sum("user_event_value").alias("View_Traffic")
+        )\
+        .orderBy(desc("View_Traffic"),desc("dashboard_id"))\
+        .limit(10)\
+
+    # Active user count over year
+    stagingDF.groupby("request_year") \
+        .agg(
+        sum("user_event_value").alias("View_Traffic"),
+        count_distinct("user").alias("active_user_count")
+        ).withColumn("avg_traffic_made_by_a_user" ,(col("View_Traffic")/col("active_user_count"))) \
+        .orderBy( asc("request_year")) \
+        # .show(truncate=False)
+
+#     popular dashboards
+    stagingDF.groupby("dashboard_id") \
+        .agg(
+        count_distinct("user").alias("active_user_count"))\
+        .orderBy(desc("active_user_count")) \
+        .limit(5)\
+        # .show(truncate=False)
+
+    userEngagementFactDF.filter(col("request_date") == col("last_request_date"))\
+    .groupby("db_dimkey")\
+    .agg(
+        sum("durationInSec").alias("Total_Duration"),
+        count("request_date").alias("number_of_days"),
+        count_distinct("user_dimkey").alias("number_of_users")
+    ).withColumn("avg_engagement_time",col("Total_Duration")/(col("number_of_users")*col("number_of_days")))\
+    .orderBy(desc("avg_engagement_time"))
+
+    # Dashboard Audience
+
+    stagingDF.groupby("user_domain").agg(
+        count_distinct("user").alias("number_of_users"),
+        sum("user_event_value").alias("total_requests"))\
+    # .orderBy(desc("number_of_users")).show(truncate=False)
+
+    # Dashboard Access Browser and
+    stagingDF.groupby("browser-platform").agg(
+        count_distinct("user").alias("number_of_users"),
+        sum("user_event_value").alias("total_requests"))\
+        .orderBy(desc("number_of_users"))
+
+    # marketing - overview
+
+    stagingDF.filter(col("dashboard_id")=="marketing-overview").groupby("request_month")\
+        .agg(
+        count_distinct("user").alias("number_of_users"),
+        count_distinct("user_domain").alias("doamin"),
+        sum("user_event_value").alias("request_count")
+    ).orderBy(desc("request_count"))
+

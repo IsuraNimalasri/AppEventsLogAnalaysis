@@ -15,6 +15,37 @@
     ]
   },
   "staging_args":{
-    "db_table": ["t_dim_dashboards","t_dim_browser","t_dim_user","t_dim_time","t_fact_view_reqs","t_fact_user_eng"]
+    "db_tables_info": [
+      {
+        "tab":"t_dim_dashboards",
+        "sdc":"NA",
+        "key": "db_dimkey"
+      },
+      {
+        "tab":"t_dim_browser",
+        "sdc":"NA",
+        "key": "b_dimkey"
+      },
+      {
+        "tab":"t_dim_user",
+        "sdc":"NA",
+        "key": "user_dimkey"
+      },
+      {
+        "tab":"t_dim_time",
+        "sdc":"NA",
+        "key": "time_dimkey"
+      },
+       {
+        "tab":"t_fact_view_reqs",
+        "sdc":"NA",
+        "key": "vreq_factkey"
+      },
+      {
+        "tab":"t_fact_user_eng",
+        "sdc":"NA",
+        "key": "NA"
+      }
+    ]
   }
 }
