@@ -2,7 +2,7 @@
 
 
 ## Overview
-This pipeline build for analysing user requests. The bellow high level design describe how the data move 
+This pipeline is build for analysing user requests. The high level design given below describe how the data move 
 from source to data warehouse.
 
 ![](PiplineDiagram.png)
@@ -10,12 +10,12 @@ from source to data warehouse.
 | Step | Description |
 |------|-------------|
 | 1    | Read raw data from Landing bucket |
-|1.1|   The data set included sensitive data (email).This step convert the email into hash value |
-| 2 | Write data into processing bucket. before write spark job do validation (datatype) and add standardization |
-|3 | Read from processing .And transform data according to DW table format. |
+|1.1|    Data set including sensitive data (email). This step convert the email into hash value |
+| 2 | Write data into Processing bucket before writing the spark job do validation (datatype) and add standardization |
+|3 | Read from Processing bucket and transform data according to DW table format |
 | 4 | Write data into Staging bucket |
-| 5 | Read data from Staging bucket this step we can avoid spark job and can use data base bulk load option. |
-|5.5 | get database username and pw from secret manager |
+| 5 | Read data from Staging bucket. This step can be avoided by database bulk upload command |
+|5.5 | Get database username and password from secret manager |
 
 
 ## Requirement for Pipeline
@@ -27,8 +27,9 @@ https://realpython.com/installing-python/
 https://docs.docker.com/engine/install/
 https://docs.docker.com/compose/install/
 4. Install python package manager
-https://pip.pypa.io/en/stable/installation/
-5.Create python3 Virtual Envrioment
+https://pip.pypa.io/en/stable/installation/ 
+5. Create python3 Virtual Envrioment
+
 ```
     python3 -m venv venv
     source venv/bin/activate
@@ -39,11 +40,11 @@ https://pip.pypa.io/en/stable/installation/
 pip install pyspark
 ```
 
-## Pipeline RunBook
+## Pipeline Execution Step
 
-Note : This example is not running spark cluster mode. It's running only standalone.So you no need to run using `spark-submit`
+Note : This example is not running in spark cluster mode but in standalone. Therefore running using `spark-submit` is not required.
 
-####Start PostgreSQL DB
+#### Start PostgreSQL DB
 
 ```buildoutcfg
 # Step 01 : open new terminal and go inside to the postgresql_mimic dir
@@ -84,5 +85,4 @@ utracker=#
 
 
 
-### Analytics 
 
