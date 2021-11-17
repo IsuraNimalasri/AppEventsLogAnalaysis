@@ -1,0 +1,20 @@
+{
+  "pipeline_name": "event-view-dashboard",
+  "mode": "batch",
+  "landing_args": {
+    "endpoint_Filter": "dashboards.view_dashboard"
+  },
+  "processing_args": {
+    "df_list" :[
+        "(dashboardDimDF,'t_dim_dashboards')",
+        "(browserDimDF,'t_dim_browser')",
+        "(userDimDF,'t_dim_user')",
+        "(timeDimDF,'t_dim_time')",
+        "(ViewRequestsFactDF,'t_fact_view_reqs')",
+        "(userEngagementFactDF,'t_fact_user_eng')"
+    ]
+  },
+  "staging_args":{
+    "db_table": ["t_dim_dashboards","t_dim_browser","t_dim_user","t_dim_time","t_fact_view_reqs","t_fact_user_eng"]
+  }
+}

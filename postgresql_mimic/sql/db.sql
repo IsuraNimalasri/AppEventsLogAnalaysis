@@ -29,9 +29,7 @@ CREATE TABLE IF NOT EXISTS public.t_dim_user (
    "user_dimkey" varchar PRIMARY KEY,
    "u_name" varchar NOT NULL,
    "u_domain" varchar NOT NULL,
-   "u_type" varchar  NOT NULL,
-   "u_fname" varchar,
-   "u_lname" varchar
+   "u_type" varchar  NOT NULL
    );
 
 CREATE TABLE IF NOT EXISTS public.t_dim_browser (
