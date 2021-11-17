@@ -1,5 +1,5 @@
 # Unmind-Assginment
-This is unmind Take Home Assginmnet 
+
 
 ## Overview
 This pipeline build for analysing user requests. The bellow high level design describe how the data move 
