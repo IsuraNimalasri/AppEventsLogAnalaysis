@@ -1,0 +1,2 @@
+{"status": 200, "browser-platform": null, "endpoint": "py_mondrian.saiku_authorize", "timestamp": "2018-09-06T17:44:42.881451", "browser-version": null, "user": "guest@localhost", "path": "/mondrian/saiku/authorize", "view-args": {}, "method": "POST", "browser": null}
+{"status": 200, "browser-platform": null, "endpoint": "py_mondrian.saiku_authorize", "timestamp": "2018-09-06T17:44:42.892403", "browser-version": null, "user": "guest@localhost", "path": "/mondrian/saiku/authorize", "view-args": {}, "method": "POST", "browser": null}

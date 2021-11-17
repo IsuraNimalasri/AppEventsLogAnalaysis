@@ -1,0 +1,1 @@
+{"method": "GET", "path": "/dashboards/shop-performance-overview", "endpoint": "dashboards.view_dashboard", "view-args": {"id": "shop-performance-overview"}, "status": 200, "user": "thomas@lampenwelt.de", "timestamp": "2018-09-24T20:04:32.516209", "browser": "chrome", "browser-platform": "windows", "browser-version": "68.0.3440.106"}

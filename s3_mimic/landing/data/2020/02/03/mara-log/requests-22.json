@@ -1,0 +1,1 @@
+{"method": "GET", "path": "/dashboards/sales-comparison", "endpoint": "dashboards.view_dashboard", "view-args": {"id": "sales-comparison"}, "status": 200, "user": "johanna.raab@lampenwelt.de", "timestamp": "2020-02-03T22:04:37.067327", "browser": "chrome", "browser-platform": "windows", "browser-version": "79.0.3945.130"}

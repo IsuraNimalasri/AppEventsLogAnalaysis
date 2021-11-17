@@ -1,0 +1,1 @@
+{"method": "POST", "path": "/mondrian/excel/authorize", "endpoint": "py_mondrian.excel_authorize", "view-args": {}, "status": 200, "user": "guest@localhost", "timestamp": "2018-12-21T14:25:37.910641", "browser": null, "browser-platform": null, "browser-version": null}

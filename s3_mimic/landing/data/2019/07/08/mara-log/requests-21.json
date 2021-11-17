@@ -1,0 +1,1 @@
+{"method": "GET", "path": "/db/mdwh-etl/product_dim", "endpoint": "mara_db.draw_schema", "view-args": {"db_alias": "mdwh-etl", "schemas": "product_dim"}, "status": 200, "user": "johanna.raab@lampenwelt.de", "timestamp": "2019-07-08T21:27:42.464222", "browser": "chrome", "browser-platform": "windows", "browser-version": "75.0.3770.100"}

@@ -1,0 +1,2 @@
+{"method": "POST", "path": "/mondrian/saiku/authorize", "endpoint": "py_mondrian.saiku_authorize", "view-args": {}, "status": 200, "user": "niklas.klitsch@lampenwelt.de", "timestamp": "2020-08-28T17:01:28.375861", "browser": null, "browser-platform": null, "browser-version": null}
+{"method": "POST", "path": "/mondrian/saiku/authorize", "endpoint": "py_mondrian.saiku_authorize", "view-args": {}, "status": 200, "user": "niklas.klitsch@lampenwelt.de", "timestamp": "2020-08-28T17:01:29.305318", "browser": null, "browser-platform": null, "browser-version": null}

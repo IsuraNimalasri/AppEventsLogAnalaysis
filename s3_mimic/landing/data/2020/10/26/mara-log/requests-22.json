@@ -1,0 +1,1 @@
+{"method": "POST", "path": "/mondrian/saiku/authorize", "endpoint": "py_mondrian.saiku_authorize", "view-args": {}, "status": 200, "user": "niko.neuhof@lampenwelt.de", "timestamp": "2020-10-26T22:03:32.964817", "browser": null, "browser-platform": null, "browser-version": null}
